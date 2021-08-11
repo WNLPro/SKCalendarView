@@ -11,6 +11,6 @@ Pod::Spec.new do |s|
   s.platform     = :ios, "8.0"
   s.source       = { :git => "https://github.com/shevakuilin/SKCalendarView.git", :tag => "0.0.6" }
   s.source_files  = "Source/SKCalendarView/**/*.{h,m}"
-  s.dependency "Masonry", "~> 1.0.1"
+  s.dependency "Masonry", "~> 1.1.0"
 
 end
