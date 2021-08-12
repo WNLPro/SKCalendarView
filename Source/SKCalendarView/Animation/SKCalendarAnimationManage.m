@@ -16,8 +16,8 @@
     if (next == YES) {// 向下翻页
         switch (effect) {
             case SK_ANIMATION_REVEAL:
-                transition.type = @"pageUnCurl";
-                transition.subtype = kCATransitionFromLeft;
+                transition.type = @"pageCurl";
+                transition.subtype = kCATransitionFromRight;
                 break;
             case SK_ANIMATION_RIPPLE:
                 transition.type = @"rippleEffect";

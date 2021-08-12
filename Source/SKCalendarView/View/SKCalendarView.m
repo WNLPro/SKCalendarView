@@ -44,10 +44,11 @@
     if (!_calendarManage) {
         _calendarManage = [SKCalendarManage manage];
         // 设置初始化日期，默认查看今天所处月份日历
-        [_calendarManage checkThisMonthRecordFromToday:[NSDate date]];
         self.theDate = [NSDate date];
+        [_calendarManage checkThisMonthRecordFromToday:self.theDate];
         self.theYear = _calendarManage.year;
         [self reloadExternalDate];
+        self.selectedRow = _calendarManage.todayPosition;
     }
     return _calendarManage;
 }
@@ -71,7 +72,7 @@
 - (NSInteger)selectedRow
 {
     if (_selectedRow == 0) {
-        _selectedRow = - 1;
+//        _selectedRow = - 1;
     }
     return _selectedRow;
 }
@@ -275,6 +276,7 @@
 - (void)checkCalendarWithAppointDate:(NSDate *)date
 {
     [self.calendarManage checkThisMonthRecordFromToday:date];
+    self.selectedRow = _calendarManage.todayInMonth;
     [self.calendarCollectionView reloadData];
     self.theDate = date;
     [self reloadExternalDate];
@@ -422,11 +424,16 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    self.selectedRow = indexPath.row;
-    if ([self.delegate respondsToSelector:@selector(selectDateWithRow:)]) {
-        [self.delegate selectDateWithRow:indexPath.row];
+    if (collectionView == self.weekCollectionView) {
+//        self.selectedRow = -1;
+    }else {
+        self.selectedRow = indexPath.row;
+        if ([self.delegate respondsToSelector:@selector(selectDateWithRow:)]) {
+            [self.delegate selectDateWithRow:indexPath.row];
+        }
+        [self.calendarCollectionView reloadData];
     }
-    [self.calendarCollectionView reloadData];
+    
 }
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
