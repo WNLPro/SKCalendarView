@@ -13,15 +13,15 @@
 #import "SKCalendarManage.h"
 
 @interface SKCalendarView () <UICollectionViewDelegate, UICollectionViewDataSource>
-@property (nonatomic, strong) UICollectionView * weekCollectionView;
-@property (nonatomic, strong) UICollectionView * calendarCollectionView;
-@property (nonatomic, strong) SKCalendarManage * calendarManage;
-@property (nonatomic, strong) UILabel * monthBackgroundLabel;
-@property (nonatomic, strong) NSDate * theDate;// 当前日期
+@property (nonatomic, strong) UICollectionView *weekCollectionView;
+@property (nonatomic, strong) UICollectionView *calendarCollectionView;
+@property (nonatomic, strong) SKCalendarManage *calendarManage;
+@property (nonatomic, strong) UILabel *monthBackgroundLabel;
+@property (nonatomic, strong) NSDate *theDate; // 当前日期
 @property (nonatomic, assign) NSUInteger theYear;// 本年
 @property (nonatomic, assign) NSUInteger theDayInMonth;// 今天在本月所处位置
 @property (nonatomic, assign) NSInteger selectedRow;// 选择的日期
-@property (nonatomic, strong) NSString * displayChineseDate;//已显示的农历日期&节日&节气
+@property (nonatomic, strong) NSString *displayChineseDate; //已显示的农历日期&节日&节气
 
 @end
 
@@ -35,7 +35,7 @@
             [self customView];
         }
     }
-    
+
     return self;
 }
 
@@ -85,12 +85,11 @@
     return _todayInMonth;
 }
 
-
 #pragma mark - 创建界面
 - (void)customView
 {
     // 周
-    UICollectionViewFlowLayout * layout = [[UICollectionViewFlowLayout alloc] init];
+    UICollectionViewFlowLayout *layout = [[UICollectionViewFlowLayout alloc] init];
     layout.scrollDirection = UICollectionViewScrollDirectionVertical;
     self.weekCollectionView = [[UICollectionView alloc] initWithFrame:self.frame collectionViewLayout:layout];
     [self addSubview:self.weekCollectionView];
@@ -102,13 +101,13 @@
         make.top.equalTo(self);
         make.left.equalTo(self);
         make.right.equalTo(self);
-        
+
         make.height.mas_offset(self.frame.size.height / 7.5);
         make.height.mas_greaterThanOrEqualTo(40).priorityHigh();
     }];
 
     // 日期
-    UICollectionViewFlowLayout * dateLayout = [[UICollectionViewFlowLayout alloc] init];
+    UICollectionViewFlowLayout *dateLayout = [[UICollectionViewFlowLayout alloc] init];
     dateLayout.scrollDirection = UICollectionViewScrollDirectionVertical;
     self.calendarCollectionView = [[UICollectionView alloc] initWithFrame:self.frame collectionViewLayout:dateLayout];
     [self addSubview:self.calendarCollectionView];
@@ -122,7 +121,7 @@
         make.right.equalTo(self);
         make.bottom.equalTo(self);
     }];
-    
+
     // 背景月份
     self.monthBackgroundLabel = [UILabel new];
     [self addSubview:self.monthBackgroundLabel];
@@ -150,7 +149,6 @@
 {
     _dayoffInWeekColor = dayoffInWeekColor;
 }
-
 
 - (void)setCalendarTodayColor:(UIColor *)calendarTodayColor
 {
@@ -243,7 +241,7 @@
     if (checkLastMonth == YES) {
         self.selectedRow = -1;// 重置已选日期
         NSInteger hours = (self.calendarManage.days - 1) * -24;
-        NSDate * date = [NSDate dateWithTimeInterval:hours * 60 * 60 sinceDate:self.theDate];
+        NSDate *date = [NSDate dateWithTimeInterval:hours * 60 * 60 sinceDate:self.theDate];
         [self.calendarManage checkThisMonthRecordFromToday:date];
         self.theDate = date;
         self.monthBackgroundLabel.text = [NSString stringWithFormat:@"%@", @(self.calendarManage.month)];
@@ -263,7 +261,7 @@
         }
         NSUInteger day = self.calendarManage.days - todayInMonth;
         NSInteger hours = (day + 1) * 24;
-        NSDate * date = [NSDate dateWithTimeInterval:hours * 60 * 60 sinceDate:self.theDate];
+        NSDate *date = [NSDate dateWithTimeInterval:hours * 60 * 60 sinceDate:self.theDate];
         [self.calendarManage checkThisMonthRecordFromToday:date];
         self.theDate = date;
         self.monthBackgroundLabel.text = [NSString stringWithFormat:@"%@", @(self.calendarManage.month)];
@@ -300,20 +298,19 @@
 #pragma mark - 获取节日&节气
 - (NSString *)getHolidayAndSolarTermsWithChineseDay:(NSString *)chineseDay
 {
-    NSString * result = @"";
+    NSString *result = @"";
     NSUInteger row = 0;
     if (self.selectedRow < 0) {
         row = self.todayInMonth;// 默认今天
     } else {
         row = self.selectedRow;
     }
-    NSString * date = getNoneNil(self.calendarManage.chineseCalendarDate[row]);
+    NSString *date = getNoneNil(self.calendarManage.chineseCalendarDate[row]);
     if (![chineseDay isEqualToString:date]) {
         result = date;
     }
     return getNoneNil(result);
 }
-
 
 #pragma mark - collectionView
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -329,7 +326,6 @@
                 make.height.mas_offset(6 * (self.frame.size.height / 7.5));
             }];
             return 42;
-            
         } else {
             if (self.calendarCollectionView.frame.size.height > 218) {
                 [self.calendarCollectionView mas_updateConstraints:^(MASConstraintMaker *make) {
@@ -339,7 +335,7 @@
             return 35;
         }
     }
-    
+
     return self.calendarManage.weekList.count;
 }
 
@@ -347,7 +343,7 @@
 {
     // 日期
     if (collectionView == self.calendarCollectionView) {
-        SKCalendarCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Calendar" forIndexPath:indexPath];
+        SKCalendarCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Calendar" forIndexPath:indexPath];
         // 是否属于双休日
         if ((indexPath.row + 1) % 7 == 0 || (indexPath.row + 1) % 7 == 1) {
             cell.calendarDateColor = self.dayoffInWeekColor;
@@ -368,10 +364,11 @@
             cell.calendarDate = getNoneNil(self.calendarManage.calendarDate[indexPath.row]);// 公历日期
             cell.calendarTitle = getNoneNil(self.calendarManage.chineseCalendarDate[indexPath.row]);// 农历日期
             cell.calendarDateColor = self.calendarTodayColor;
-            cell.calendarTitle = getNoneNil(self.calendarTodayTitle);
+            if (self.calendarTodayTitle) {
+                cell.calendarTitle = getNoneNil(self.calendarTodayTitle);
+            }
             cell.calendarTitleColor = self.calendarTodayTitleColor;
             cell.dateColor = self.dateColor;
-            
         } else {
             cell.calendarDate = getNoneNil(self.calendarManage.calendarDate[indexPath.row]);// 公历日期
             cell.calendarTitle = getNoneNil(self.calendarManage.chineseCalendarDate[indexPath.row]);// 农历日期
@@ -379,20 +376,17 @@
         }
         // 对节日&节气进行特殊处理
         if (![self.calendarManage.chineseCalendarDay[indexPath.row] isEqualToString:self.calendarManage.chineseCalendarDate[indexPath.row]]) {
-            NSString * specialDay = self.calendarManage.chineseCalendarDate[indexPath.row];
+            NSString *specialDay = self.calendarManage.chineseCalendarDate[indexPath.row];
             // 节气
             if (specialDay.length == 2 && ![specialDay isEqualToString:@"除夕"] && ![specialDay isEqualToString:@"春节"] && ![specialDay isEqualToString:@"七夕"] && ![specialDay isEqualToString:@"元旦"] && ![specialDay isEqualToString:@"小年"]) {
                 cell.dateBackgroundIcon = self.dateBackgroundIcon;
                 if (self.calendarManage.month >= 2 && self.calendarManage.month <= 4) {// 春季
                     cell.calendarTitleColor = self.springColor;
-                    
                 } else if (self.calendarManage.month >= 5 && self.calendarManage.month <= 7) {// 夏季
                     cell.calendarTitleColor = self.summerColor;
-                    
                 } else if (self.calendarManage.month >= 8 && self.calendarManage.month <= 10) {// 秋季
                     cell.calendarTitleColor = self.autumnColor;
-
-                } else if (self.calendarManage.month >= 11 || self.calendarManage.month == 1){// 冬季
+                } else if (self.calendarManage.month >= 11 || self.calendarManage.month == 1) {// 冬季
                     cell.calendarTitleColor = self.winterColor;
                 }
             } else {// 节日
@@ -405,11 +399,10 @@
             cell.calendarTitleColor = self.calendarTitleColor;
             cell.dateBackgroundIcon = nil;
         }
-        
+
         return cell;
-        
     } else {// 周
-        SKWeekCollectionViewCell * cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Week" forIndexPath:indexPath];
+        SKWeekCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"Week" forIndexPath:indexPath];
         cell.week = getNoneNil(self.calendarManage.weekList[indexPath.row]);
         cell.weekBackgroundColor = self.weekCollectionView.backgroundColor;
         if (indexPath.row == 0 || indexPath.row == self.calendarManage.weekList.count - 1) {
@@ -417,7 +410,7 @@
         } else {
             cell.weekColor = [UIColor blackColor];
         }
-        
+
         return cell;
     }
 }
@@ -426,17 +419,16 @@
 {
     if (collectionView == self.weekCollectionView) {
 //        self.selectedRow = -1;
-    }else {
+    } else {
         self.selectedRow = indexPath.row;
         if ([self.delegate respondsToSelector:@selector(selectDateWithRow:)]) {
             [self.delegate selectDateWithRow:indexPath.row];
         }
         [self.calendarCollectionView reloadData];
     }
-    
 }
 
--(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     return CGSizeMake(self.frame.size.width / 7, self.frame.size.height / 7);
 }
@@ -450,6 +442,5 @@
 {
     return 0;
 }
-
 
 @end
